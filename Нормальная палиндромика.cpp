@@ -3,59 +3,49 @@
 
 #include "stdafx.h"
 #include <iostream>
+#include <fstream>
 #include <vector>
+#include <string>
 #include <algorithm>
-
 using namespace std;
 
-vector < long long>  t(400000);
-int n, k;
-long long i, j, l, r, x;
-char c;
+int main()
+{
+	ifstream in_file = ifstream("input.txt");
+	ofstream out_file = ofstream("output.txt");
 
-long long Sum(int v, int lp, int rp, int l, int r) {
-	if (l >> r) return 0;
-	if ((l == lp) && (r == rp))
-		return t[v];
-	int m = (lp + rp) / 2;
+	string s1;
+	std::getline(in_file, s1);
+	int l = s1.length();
+	string s = s1;
+	reverse(s1.begin(), s1.end());
+	vector<int> nul(l, 0);
+	vector< char > k1;
+	vector< char > k;
 
-	return Sum(2 * v, lp, m, l, min(r, m)) +
-		Sum(2 * v + 1, m + 1, rp, max(l, m + 1), r);
-}
+	int h = 1;
+	if (s != s1) { h = 0; }
+	if (h == 1) { out_file << ""; return(0); }
 
-void update(int v, int lp, int rp, int p, int new_v) {
-
-	if (lp == rp)
-		t[v] = new_v;
-	else {
-		int m = (lp + rp) / 2;
-		if (p <= m)
-			update(2 * v, lp, m, p, new_v);
-		else
-			update(2 * v + 1, m + 1, rp, p, new_v);
-
-		t[v] = t[2 * v] + t[2 * v + 1];
+	for (int i = 0; i < l - 1; i++)
+	{
+		k.emplace_back(s1[i]);
+		reverse(k.begin(), k.end());
+		k1 = k;
+		reverse(k.begin(), k.end());
+		if (k != k1) { nul[i] = 0; }
+		else { nul[i] = 1; }
 	}
-
-}
-
-int main() {
-	freopen("input.txt", "r", stdin);
-	freopen("output.txt", "w", stdout);
-	cin >> n >> k;
-
-	for (j = 0; j < k; j++) {
-		cin >> c;
-		switch (c) {
-		case 'A':
-			cin >> i >> x;
-			update(1, 1, n, i, x);
-			break;
-		case 'Q':
-			cin >> l >> r;
-			cout << Sum(1, 1, n, l, r) << '\n';
+	reverse(nul.begin(), nul.end());
+	for (int i = 0; i <l; i++) {
+		if (nul[i] != 0) {
+			h = i;
 			break;
 		}
-
 	}
+	s.erase(s.begin() + h, s.end());
+	reverse(s.begin(), s.end());
+	out_file << s;
+
+	return(0);
 }
